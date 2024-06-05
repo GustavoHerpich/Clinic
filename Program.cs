@@ -60,6 +60,15 @@ builder.Services.AddEntityFrameworkSqlServer()
 
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy",
+        builder => builder.WithOrigins("https://localhost:8080")
+                          .AllowAnyMethod()
+                          .AllowAnyHeader()
+                          .AllowCredentials());
+});
+
 var app = builder.Build();
 
 
@@ -72,7 +81,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.MapSwagger().RequireAuthorization();
 app.UseRouting();
-        
+app.UseCors("CorsPolicy");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
