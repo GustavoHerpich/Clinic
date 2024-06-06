@@ -1,44 +1,40 @@
-﻿using System.Net;
+﻿using Clinic.Exceptions;
+using System.Net;
 
-public class ExceptionHandlingMiddleware
+namespace Clinic.Middleware
 {
-    private readonly RequestDelegate _next;
-    private readonly ILogger<ExceptionHandlingMiddleware> _logger;
-    public record ExceptionResponse(HttpStatusCode StatusCode, string Description);
-
-
-    public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
+    public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
     {
-        _next = next;
-        _logger = logger;
-    }
+        private readonly RequestDelegate _next = next;
+        private readonly ILogger<ExceptionHandlingMiddleware> _logger = logger;
+        public record ExceptionResponse(HttpStatusCode StatusCode, string Description);
 
-    public async Task InvokeAsync(HttpContext context)
-    {
-        try
+        public async Task InvokeAsync(HttpContext context)
         {
-            await _next(context);
+            try
+            {
+                await _next(context);
+            }
+            catch (Exception ex)
+            {
+                await HandleExceptionAsync(context, ex);
+            }
         }
-        catch (Exception ex)
+        private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            await HandleExceptionAsync(context, ex);
+            _logger.LogError(exception, "Mensagem de erro do servidor {ErrorMessage}", exception.Message);
+
+            ExceptionResponse response = exception switch
+            {
+                NotFoundException notFoundEx => new ExceptionResponse(HttpStatusCode.NotFound, notFoundEx.Message),
+                UnauthorizedException _ => new ExceptionResponse(HttpStatusCode.Unauthorized, "Usuário ou senha inválidos."),
+                BadRequestException badRequestEx => new ExceptionResponse(HttpStatusCode.BadRequest, badRequestEx.Message),
+                _ => new ExceptionResponse(HttpStatusCode.InternalServerError, "Ocorreu um erro no nosso sistema, favor entre em contato com nós ou tente mais tarde.")
+            };
+
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = (int)response.StatusCode;
+            await context.Response.WriteAsJsonAsync(response);
         }
-    }
-
-    private async Task HandleExceptionAsync(HttpContext context, Exception exception)
-    {
-        _logger.LogError(exception, "An unexpected error occurred.");
-
-
-        ExceptionResponse response = exception switch
-        {
-            KeyNotFoundException _ => new ExceptionResponse(HttpStatusCode.NotFound, "Funcionário não encontrado."),
-            UnauthorizedAccessException _ => new ExceptionResponse(HttpStatusCode.Unauthorized, "Usuário ou senha inválidos."),
-            _ => new ExceptionResponse(HttpStatusCode.InternalServerError, "Ocorreu um erro no nosso sistema, favor entre em contato com nós ou tente mais tarde.")
-        };
-
-        context.Response.ContentType = "application/json";
-        context.Response.StatusCode = (int)response.StatusCode;
-        await context.Response.WriteAsJsonAsync(response);
     }
 }
