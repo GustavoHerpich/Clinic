@@ -1,7 +1,7 @@
 ﻿using Clinic.Data;
-using Clinic.Interfaces;
-using Clinic.Models;
+using Clinic.Entities;
 using Microsoft.EntityFrameworkCore;
+using Clinic.Interfaces.Repository;
 
 namespace Clinic.Repositories
 {
@@ -87,6 +87,11 @@ namespace Clinic.Repositories
             {
                 throw new Exception();
             }
+        }
+
+        public async Task<Employee> FindById(int id)
+        {
+            return await _context.Employees.FirstOrDefaultAsync(x => x.Id.Equals(id));
         }
     }
 }

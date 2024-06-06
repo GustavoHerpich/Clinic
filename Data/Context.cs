@@ -1,5 +1,5 @@
 ﻿using Clinic.Data.Map;
-using Clinic.Models;
+using Clinic.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Clinic.Data
@@ -9,10 +9,12 @@ namespace Clinic.Data
         public Context(DbContextOptions<Context> options) : base(options) { }
 
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<Patient> Patients { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new EmployeeMap());
+            modelBuilder.ApplyConfiguration(new PatientMap());
 
             base.OnModelCreating(modelBuilder);
         }

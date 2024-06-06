@@ -1,8 +1,8 @@
-﻿using Clinic.Interfaces;
-using Clinic.Models;
+﻿using Clinic.Entities;
 using Clinic.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Clinic.Interfaces.Repository;
 
 namespace Clinic.Controllers
 {
@@ -43,16 +43,16 @@ namespace Clinic.Controllers
             return Ok(employees);
         }
 
-        [HttpGet("{userName}/{password}")]
-        [Authorize]
-        public async Task<ActionResult<Employee>> FindOneAsync(string userName, string password)
-        {
-            Employee employee = await _employeeRepository.FindOneAsync(userName, password);
-            if (employee == null)
-                throw new KeyNotFoundException();
+        //[HttpGet("{userName}/{password}")]
+        //[Authorize]
+        //public async Task<ActionResult<Employee>> FindOneAsync(string userName, string password)
+        //{
+        //    Employee employee = await _employeeRepository.FindOneAsync(userName, password);
+        //    if (employee == null)
+        //        throw new KeyNotFoundException();
 
-            return Ok(employee);
-        }
+        //    return Ok(employee);
+        //}
 
         [HttpPost]
         [Authorize]
@@ -78,6 +78,18 @@ namespace Clinic.Controllers
         public async Task<ActionResult> DeleteEmployee(int id)
         {
             await _employeeRepository.DeleteAsync(id);
+            return Ok();
+        }
+
+        [HttpGet("{id}")]
+        [Authorize]
+        public async Task<ActionResult> FindById(int id)
+        {
+            var user = await _employeeRepository.FindById(id);
+
+            if (user == null)
+                return NotFound();
+            
             return Ok();
         }
     }

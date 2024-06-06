@@ -22,4 +22,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\Business\" />
+    <Folder Include="Models\Patient\" />
+    <Folder Include="Business\" />
+  </ItemGroup>
+
 </Project>

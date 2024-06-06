@@ -1,6 +1,6 @@
-﻿using Clinic.Models;
+﻿using Clinic.Entities;
 
-namespace Clinic.Interfaces
+namespace Clinic.Interfaces.Repository
 {
     public interface IEmployeeRepository : IBaseRepository<Employee>
     {

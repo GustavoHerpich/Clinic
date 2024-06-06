@@ -1,4 +1,4 @@
-﻿namespace Clinic.Models
+﻿namespace Clinic.Entities
 {
     public class Employee
     {

@@ -1,6 +1,6 @@
 using Clinic;
 using Clinic.Data;
-using Clinic.Interfaces;
+using Clinic.Interfaces.Repository;
 using Clinic.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
