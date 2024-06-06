@@ -1,4 +1,4 @@
-﻿using Clinic.Models;
+﻿using Clinic.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,9 +8,11 @@ namespace Clinic.Data.Map
     {
         public void Configure(EntityTypeBuilder<Employee> builder)
         {
-            builder.HasKey(x => x.Id);
-            builder.Property(x => x.UserName).IsRequired().HasMaxLength(20);
-            builder.Property(x => x.Password).IsRequired().HasMaxLength(20);
+            builder.HasKey(e => e.Id);
+            builder.Property(e => e.Id).ValueGeneratedOnAdd();
+            builder.Property(e => e.UserName).IsRequired().HasMaxLength(20);
+            builder.Property(e => e.Password).IsRequired().HasMaxLength(20);
+            builder.Property(e => e.Role).IsRequired().HasConversion<string>();
         }
     }
 }

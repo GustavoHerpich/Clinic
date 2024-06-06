@@ -1,6 +1,7 @@
 using Clinic;
 using Clinic.Data;
 using Clinic.Interfaces;
+using Clinic.Middleware;
 using Clinic.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -63,7 +64,7 @@ builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy",
-        builder => builder.WithOrigins("https://localhost:8080")
+        builder => builder.WithOrigins("http://localhost:8080", "https://localhost:8080")
                           .AllowAnyMethod()
                           .AllowAnyHeader()
                           .AllowCredentials());

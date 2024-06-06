@@ -1,0 +1,7 @@
+# Ignore Visual Studio temporary files, build results, and
+# folder-based project configuration
+.vscode/
+.vscode/*
+bin/
+obj/
+bin/Debug/net*/
