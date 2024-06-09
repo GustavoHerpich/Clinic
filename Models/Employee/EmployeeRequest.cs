@@ -1,10 +1,9 @@
 ﻿using Clinic.Models.Enums;
 
-namespace Clinic.Entities
+namespace Clinic.Models.Employee
 {
-    public class Employee
+    public class EmployeeRequest
     {
-        public int Id { get; set; }
         public required string UserName { get; set; }
         public required string Password { get; set; }
         public required Roles Role { get; set; }

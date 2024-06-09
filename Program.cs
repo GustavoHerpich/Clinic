@@ -1,6 +1,7 @@
 using Clinic;
 using Clinic.Data;
-using Clinic.Interfaces.Repository;
+using Clinic.Interfaces;
+using Clinic.Middleware;
 using Clinic.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -60,6 +61,15 @@ builder.Services.AddEntityFrameworkSqlServer()
 
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy",
+        builder => builder.WithOrigins("http://localhost:8080", "https://localhost:8080")
+                          .AllowAnyMethod()
+                          .AllowAnyHeader()
+                          .AllowCredentials());
+});
+
 var app = builder.Build();
 
 
@@ -72,7 +82,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.MapSwagger().RequireAuthorization();
 app.UseRouting();
-        
+app.UseCors("CorsPolicy");
+
 app.UseAuthentication();
 app.UseAuthorization();
 

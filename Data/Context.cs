@@ -4,10 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Clinic.Data
 {
-    public class Context : DbContext
+    public class Context(DbContextOptions<Context> options) : DbContext(options)
     {
-        public Context(DbContextOptions<Context> options) : base(options) { }
-
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Patient> Patients { get; set; }
 

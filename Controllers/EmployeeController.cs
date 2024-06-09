@@ -1,4 +1,5 @@
-﻿using Clinic.Entities;
+﻿using Clinic.Interfaces;
+using Clinic.Models;
 using Clinic.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,77 +9,68 @@ namespace Clinic.Controllers
 {
     [Route("api/employee")]
     [ApiController]
-    public class EmployeeController : ControllerBase
+    public class EmployeeController(IEmployeeRepository employeeRepository) : ControllerBase
     {
-        private readonly IEmployeeRepository _employeeRepository;
+        private readonly IEmployeeRepository _employeeRepository = employeeRepository;
 
-        public EmployeeController(IEmployeeRepository employeeRepository)
-        {
-            _employeeRepository = employeeRepository;
-        }
-
-        [HttpPost]
-        [Route("login")]
-        [AllowAnonymous]
-        public async Task<ActionResult<dynamic>> AuthenticateAsync([FromBody] Employee login)
-        {
-            var employee = await _employeeRepository.FindOneAsync(login.UserName, login.Password);
-            if (employee == null)
-                throw new UnauthorizedAccessException();
-
-            var token = TokenService.GenerateToken(employee);
-
-            return new
-            {
-                login = login.UserName,
-                token
-            };
-        }
-
-        [HttpGet]
+        [HttpGet("FindAll")]
         [Authorize]
         public async Task<ActionResult<List<Employee>>> FindAllAsync()
         {
-            List<Employee> employees = await _employeeRepository.FindAllAsync();
+            var employees = await _employeeRepository.FindAllAsync();
+
             return Ok(employees);
         }
 
-        //[HttpGet("{userName}/{password}")]
-        //[Authorize]
-        //public async Task<ActionResult<Employee>> FindOneAsync(string userName, string password)
-        //{
-        //    Employee employee = await _employeeRepository.FindOneAsync(userName, password);
-        //    if (employee == null)
-        //        throw new KeyNotFoundException();
+        [HttpGet("FinOne/{userName}")]
+        [Authorize]
+        public async Task<ActionResult<Employee>> FindOneAsync(string userName)
+        {
+            var employee = await _employeeRepository.FindOneAsync(userName);
 
         //    return Ok(employee);
         //}
 
-        [HttpPost]
-        [Authorize]
-        public async Task<ActionResult<Employee>> CreateAsync(Employee employee)
+        [HttpPost("Create")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<Employee>> CreateAsync(EmployeeRequest employeeRequest)
         {
+            var existingEmployee = await _employeeRepository.FindOneAsync(employeeRequest.UserName);
+            if (existingEmployee != null)
+                throw new BadRequestException("Funcionario já existe");
+
+            var employee = new Employee
+            {
+                UserName = employeeRequest.UserName,
+                Password = employeeRequest.Password,
+                Role = employeeRequest.Role
+            };
             employee = await _employeeRepository.CreateAsync(employee);
             return Ok(employee);
         }
 
-        [HttpPut("{id}")]
-        [Authorize]
-        public async Task<ActionResult<Employee>> UpdateEmployee(int id, Employee employeeToUpdate)
+        [HttpPut("Update/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<Employee>> UpdateEmployee(int id, [FromBody] EmployeeRequest employeeRequest)
         {
-            if (id != employeeToUpdate.Id)
-                return BadRequest();
-            
-            var updatedEmployee = await _employeeRepository.UpdateAsync(employeeToUpdate);
+            var employee = new Employee
+            {
+                Id = id,
+                UserName = employeeRequest.UserName,
+                Password = employeeRequest.Password,
+                Role = employeeRequest.Role
+            };
+
+            var updatedEmployee = await _employeeRepository.UpdateAsync(employee);
             return Ok(updatedEmployee);
         }
 
-        [HttpDelete("{id}")]
-        [Authorize]
+        [HttpDelete("Delete/{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteEmployee(int id)
         {
             await _employeeRepository.DeleteAsync(id);
-            return Ok();
+            return NoContent();
         }
 
         [HttpGet("{id}")]

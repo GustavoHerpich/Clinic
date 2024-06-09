@@ -1,97 +1,56 @@
 ﻿using Clinic.Data;
 using Clinic.Entities;
+using Clinic.Exceptions;
+using Clinic.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Clinic.Interfaces.Repository;
 
 namespace Clinic.Repositories
 {
-    public class EmployeeRepository : IEmployeeRepository
+    public class EmployeeRepository(Context context) : IEmployeeRepository
     {
-        private readonly Context _context;
-
-        public EmployeeRepository(Context context)
-        {
-            _context = context;
-        }
+        private readonly Context _context = context;
 
         public async Task<List<Employee>> FindAllAsync()
-        {
-            try
-            {
-                return await _context.Employees.ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception();
-            }
-        }
+            => await _context.Employees.ToListAsync();
 
-        public async Task<Employee> FindOneAsync(string userName, string password)
+        public async Task<Employee> FindOneAsync(string userName)
         {
-            try
-            {
-                return await _context.Employees.FirstOrDefaultAsync(x => x.UserName.Equals(userName) && x.Password.Equals(password));
-            }
-            catch (Exception ex)
-            {
-                throw new Exception();
-            }
+            var employee = await _context.Employees.FirstOrDefaultAsync(x => x.UserName.Equals(userName));
+            if (employee == null)
+                throw new NotFoundException("Funcionário não encontrado.");
+            return employee;
         }
 
         public async Task<Employee> CreateAsync(Employee employee)
         {
-            try
-            {
-                await _context.Employees.AddAsync(employee);
-                await _context.SaveChangesAsync();
-
-                return employee;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception();
-            }
+            await _context.Employees.AddAsync(employee);
+            await _context.SaveChangesAsync();
+            return employee;
         }
 
         public async Task<Employee> UpdateAsync(Employee employee)
         {
-            try
-            {
-                var existingEmployee = await _context.Employees.FindAsync(employee.Id) ?? throw new KeyNotFoundException();
+            var existingEmployee = await _context.Employees.FindAsync(employee.Id);
+            if (existingEmployee == null)
+                throw new NotFoundException("Funcionário não encontrado.");
 
-                _context.Entry(existingEmployee).State = EntityState.Detached;
-                _context.Entry(employee).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+            existingEmployee.UserName = employee.UserName;
+            existingEmployee.Password = employee.Password;
+            existingEmployee.Role = employee.Role;
 
-                return employee;
-            }
-            catch (KeyNotFoundException ex)
-            {
-                throw new KeyNotFoundException();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception();
-            }
+            await _context.SaveChangesAsync();
+            return existingEmployee;
         }
 
         public async Task DeleteAsync(int id)
         {
-            var employee = await _context.Employees.FindAsync(id) ?? throw new KeyNotFoundException();
-            try
-            {
-                _context.Employees.Remove(employee);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception();
-            }
-        }
+            var existingEmployee = await _context.Employees.FindAsync(id);
+            if (existingEmployee == null)
+                throw new NotFoundException("Funcionário não encontrado.");
 
-        public async Task<Employee> FindById(int id)
-        {
-            return await _context.Employees.FirstOrDefaultAsync(x => x.Id.Equals(id));
+            _context.Employees.Remove(existingEmployee);
+            await _context.SaveChangesAsync();
         }
     }
 }
