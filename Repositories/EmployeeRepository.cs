@@ -1,7 +1,6 @@
 ﻿using Clinic.Data;
 using Clinic.Entities;
 using Clinic.Exceptions;
-using Clinic.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Clinic.Interfaces.Repository;
 
@@ -51,6 +50,11 @@ namespace Clinic.Repositories
 
             _context.Employees.Remove(existingEmployee);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<Employee> FindById(int id)
+        {
+            return await _context.Employees.FirstOrDefaultAsync(x => x.Id.Equals(id));
         }
     }
 }

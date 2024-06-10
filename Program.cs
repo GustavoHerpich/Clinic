@@ -1,6 +1,9 @@
 using Clinic;
+using Clinic.Business;
 using Clinic.Data;
 using Clinic.Interfaces;
+using Clinic.Interfaces.Business;
+using Clinic.Interfaces.Repository;
 using Clinic.Middleware;
 using Clinic.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -59,7 +62,14 @@ builder.Services.AddEntityFrameworkSqlServer()
         options => options.UseSqlServer(builder.Configuration.GetConnectionString("DataBase"))
     );
 
+# region Repository Injections
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+#endregion
+
+# region Business Injections
+builder.Services.AddScoped<IPatientBusiness, PatientBusiness>();
+#endregion
 
 builder.Services.AddCors(options =>
 {

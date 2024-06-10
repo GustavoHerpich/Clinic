@@ -1,5 +1,6 @@
 ﻿using Clinic.Exceptions;
 using Clinic.Interfaces;
+using Clinic.Interfaces.Repository;
 using Clinic.Models.Login;
 using Clinic.Services;
 using Microsoft.AspNetCore.Authorization;

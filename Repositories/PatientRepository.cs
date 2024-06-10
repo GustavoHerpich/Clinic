@@ -17,17 +17,10 @@ namespace Clinic.Repositories
 
         public async Task<Patient> CreateAsync(Patient entity)
         {
-            try
-            {
-                await _context.Patients.AddAsync(entity);
-                await _context.SaveChangesAsync();
+            await _context.Patients.AddAsync(entity);
+            await _context.SaveChangesAsync();
 
-                return entity;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception();
-            }
+            return entity;
         }
 
         public async Task DeleteAsync(int id)
@@ -47,6 +40,15 @@ namespace Clinic.Repositories
         public async Task<List<Patient>> FindAllAsync()
         {
             return await _context.Patients.ToListAsync();
+        }
+
+        public async Task<Patient> FindByCpfAsync(string cpf, int id)
+        {
+            var find = id == 0 ?
+                       await _context.Patients.FirstOrDefaultAsync(x => x.Cpf.Equals(cpf)) :
+                       await _context.Patients.FirstOrDefaultAsync(x => x.Cpf.Equals(cpf) && x.Id != id);
+
+            return find;
         }
 
         public async Task<Patient> FindById(int id)

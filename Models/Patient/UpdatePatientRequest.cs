@@ -1,6 +1,6 @@
-﻿namespace Clinic.Entities
+﻿namespace Clinic.Models.Patient
 {
-    public class Patient
+    public class UpdatePatientRequest
     {
         public int Id { get; set; }
         public string Name { get; set; }
