@@ -1,4 +1,4 @@
-name: Merge main to master
+name: Merge main to development
 
 on:
   push:
@@ -23,12 +23,12 @@ jobs:
       - name: Fetch all branches
         run: git fetch --all
 
-      - name: Merge main into master
+      - name: Merge main into development
         run: |
-          git checkout master
+          git checkout development
           git merge main --allow-unrelated-histories
 
       - name: Push changes
-        run: git push origin master
+        run: git push origin development
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
