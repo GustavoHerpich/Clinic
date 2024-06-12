@@ -1,96 +1,24 @@
-using Clinic;
-using Clinic.Business;
-using Clinic.Data;
-using Clinic.Interfaces;
-using Clinic.Interfaces.Business;
-using Clinic.Interfaces.Repository;
+using Clinic.Installers;
 using Clinic.Middleware;
-using Clinic.Repositories;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System.Text;
+using Clinic.Models.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddSettings(builder.Configuration);
+builder.Services.InstallServices(builder.Configuration);
+
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "CLinic", Version = "v1" });
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
-    });
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
-});
-
-var key = Encoding.ASCII.GetBytes(Settings.Secret);
-builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            ValidateAudience = false,
-            IssuerSigningKey = new SymmetricSecurityKey(key),
-            ValidateIssuer = false
-        };
-    });
-
-builder.Services.AddEntityFrameworkSqlServer()
-    .AddDbContext<Context>(
-        options => options.UseSqlServer(builder.Configuration.GetConnectionString("DataBase"))
-    );
-
-# region Repository Injections
-builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-builder.Services.AddScoped<IPatientRepository, PatientRepository>();
-#endregion
-
-# region Business Injections
-builder.Services.AddScoped<IPatientBusiness, PatientBusiness>();
-#endregion
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("CorsPolicy",
-        builder => builder.WithOrigins("http://localhost:8080", "https://localhost:8080")
-                          .AllowAnyMethod()
-                          .AllowAnyHeader()
-                          .AllowCredentials());
-});
 
 var app = builder.Build();
-
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CLinic"));
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Clinic"));
 }
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.MapSwagger().RequireAuthorization();
 app.UseRouting();
 app.UseCors("CorsPolicy");
 
