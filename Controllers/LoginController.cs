@@ -10,9 +10,10 @@ namespace Clinic.Controllers
 {
     [Route("api/login")]
     [ApiController]
-    public class LoginController(IEmployeeRepository employeeRepository) : ControllerBase
+    public class LoginController(IEmployeeRepository employeeRepository, TokenService tokenService) : ControllerBase
     {
         private readonly IEmployeeRepository _employeeRepository = employeeRepository;
+        private readonly TokenService _tokenService = tokenService;
 
         [HttpPost]
         [AllowAnonymous]
@@ -22,7 +23,7 @@ namespace Clinic.Controllers
             if (employee == null || employee.Password != loginRequest.Password)
                 throw new UnauthorizedException();
 
-            var token = TokenService.GenerateToken(employee);
+            var token = _tokenService.GenerateToken(employee);
 
             return new
             {
@@ -30,6 +31,7 @@ namespace Clinic.Controllers
                 token
             };
         }
+
 
         [HttpPost("recoverpassword")]
         [AllowAnonymous]
