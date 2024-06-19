@@ -16,8 +16,8 @@ namespace Clinic.Repositories
         public async Task<Employee> FindOneAsync(string userName)
         {
             var employee = await _context.Employees.FirstOrDefaultAsync(x => x.UserName.Equals(userName));
-            if (employee == null)
-                throw new NotFoundException("Funcionário não encontrado.");
+            //if (employee == null)
+            //    throw new NotFoundException("Funcionário não encontrado.");
             return employee;
         }
 
