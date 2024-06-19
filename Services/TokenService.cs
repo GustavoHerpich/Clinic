@@ -22,7 +22,7 @@ namespace Clinic.Services
                 Subject = new ClaimsIdentity(
                 [
                     new Claim(ClaimTypes.Name, employee.UserName),
-                    new Claim(ClaimTypes.Role, nameof(employee.Role))
+                    new Claim(ClaimTypes.Role, employee.Role.ToString())
                 ]),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(
