@@ -1,4 +1,5 @@
 ﻿using Clinic.Entities;
+using Clinic.Exceptions;
 using Clinic.Interfaces.Business;
 using Clinic.Interfaces.Repository;
 
@@ -18,7 +19,7 @@ namespace Clinic.Business
             var find = await _patientRepository.FindByCpfAsync(entity.Cpf);
 
             if (find != null)
-                throw new BadHttpRequestException("Já existe cadastro para o CPF informado.");
+                throw new BadRequestException("Já existe cadastro para o CPF informado.");
 
             return await _patientRepository.CreateAsync(entity);
         }
@@ -43,7 +44,7 @@ namespace Clinic.Business
             var find = await _patientRepository.FindByCpfAsync(entity.Cpf, entity.Id);
 
             if (find != null)
-                throw new BadHttpRequestException("Já existe cadastro para o CPF informado.");
+                throw new BadRequestException("Já existe cadastro para o CPF informado.");
 
             return await _patientRepository.UpdateAsync(entity);
         }
