@@ -82,7 +82,7 @@ namespace Clinic.Controllers
             if (user == null)
                 return NotFound();
             
-            return Ok();
+            return Ok(user);
         }
     }
 }
