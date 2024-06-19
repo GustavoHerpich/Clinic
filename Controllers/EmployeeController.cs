@@ -13,7 +13,7 @@ namespace Clinic.Controllers
     {
         private readonly IEmployeeRepository _employeeRepository = employeeRepository;
 
-        [HttpGet("FindAll")]
+        [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<List<Employee>>> FindAllAsync()
         {
@@ -22,7 +22,7 @@ namespace Clinic.Controllers
             return Ok(employees);
         }
 
-        [HttpGet("FindOne/{userName}")]
+        [HttpGet("{userName}")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Employee>> FindOneAsync(string userName)
         {
@@ -31,7 +31,7 @@ namespace Clinic.Controllers
             return Ok(employee);
         }
 
-        [HttpPost("Create")]
+        [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Employee>> CreateAsync(EmployeeRequest employeeRequest)
         {
@@ -49,7 +49,7 @@ namespace Clinic.Controllers
             return Ok(employee);
         }
 
-        [HttpPut("Update/{id}")]
+        [HttpPut]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Employee>> UpdateEmployee(int id, [FromBody] EmployeeRequest employeeRequest)
         {
@@ -65,7 +65,7 @@ namespace Clinic.Controllers
             return Ok(updatedEmployee);
         }
 
-        [HttpDelete("Delete/{id}")]
+        [HttpDelete]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteEmployee(int id)
         {
