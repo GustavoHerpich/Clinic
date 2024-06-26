@@ -1,8 +1,5 @@
 ﻿using Clinic.Entities;
-using Clinic.Exceptions;
 using Clinic.Interfaces.Business;
-using Clinic.Models.Employee;
-using Clinic.Models.Enums;
 using Clinic.Models.Patient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +18,7 @@ namespace Clinic.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<ActionResult<List<Patient>>> FindAllAsync()
         {
             List<Patient> patients = await _business.FindAllAsync();
@@ -30,7 +27,7 @@ namespace Clinic.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<ActionResult<Patient>> CreateAsync(PatientRequest request)
         {
             var obj = new Patient
@@ -46,7 +43,7 @@ namespace Clinic.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<ActionResult<Patient>> UpdateAsync(int id, [FromBody] PatientRequest request)
         {
             var obj = new Patient
@@ -58,20 +55,20 @@ namespace Clinic.Controllers
                 DateOfBirth = request.DateOfBirth,
             };
 
-            var updatedEmployee = await _business.UpdateAsync(obj);
-            return Ok(updatedEmployee);
+            var updated = await _business.UpdateAsync(obj);
+            return Ok(updated);
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> DeleteEmployee(int id)
+        [AllowAnonymous]
+        public async Task<ActionResult> Delete(int id)
         {
             await _business.DeleteAsync(id);
             return NoContent();
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<ActionResult<Patient>> FindById(int id)
         {
             var patient = await _business.FindById(id);
