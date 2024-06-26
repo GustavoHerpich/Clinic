@@ -8,11 +8,13 @@ namespace Clinic.Data
     {
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Patient> Patients { get; set; }
+        public DbSet<Doctor> Doctors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new EmployeeMap());
             modelBuilder.ApplyConfiguration(new PatientMap());
+            modelBuilder.ApplyConfiguration(new DoctorMap());
 
             base.OnModelCreating(modelBuilder);
         }

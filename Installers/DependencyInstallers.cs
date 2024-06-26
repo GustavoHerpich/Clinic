@@ -15,10 +15,12 @@ namespace Clinic.Dependencies
             #region Repositories
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             services.AddScoped<IPatientRepository, PatientRepository>();
+            services.AddScoped<IDoctorRepository, DoctorRepository>();
             #endregion
 
             #region Business
             services.AddScoped<IPatientBusiness, PatientBusiness>();
+            services.AddScoped<IDoctorBusiness, DoctorBusiness>();
             #endregion
 
             return services;
