@@ -14,7 +14,7 @@ namespace Clinic.Controllers
         private readonly IEmployeeRepository _employeeRepository = employeeRepository;
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<ActionResult<List<Employee>>> FindAllAsync()
         {
             var employees = await _employeeRepository.FindAllAsync();
@@ -22,8 +22,8 @@ namespace Clinic.Controllers
             return Ok(employees);
         }
 
-        [HttpGet("{userName}")]
-        [Authorize(Roles = "Admin")]
+        [HttpGet("userName")]
+        [AllowAnonymous]
         public async Task<ActionResult<Employee>> FindOneAsync(string userName)
         {
             var employee = await _employeeRepository.FindOneAsync(userName);
@@ -32,7 +32,7 @@ namespace Clinic.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<ActionResult<Employee>> CreateAsync(EmployeeRequest employeeRequest)
         {
             var existingEmployee = await _employeeRepository.FindOneAsync(employeeRequest.UserName);
@@ -49,8 +49,8 @@ namespace Clinic.Controllers
             return Ok(employee);
         }
 
-        [HttpPut]
-        [Authorize(Roles = "Admin")]
+        [HttpPut("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<Employee>> UpdateEmployee(int id, [FromBody] EmployeeRequest employeeRequest)
         {
             var employee = new Employee
@@ -65,8 +65,8 @@ namespace Clinic.Controllers
             return Ok(updatedEmployee);
         }
 
-        [HttpDelete]
-        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult> DeleteEmployee(int id)
         {
             await _employeeRepository.DeleteAsync(id);
@@ -74,7 +74,7 @@ namespace Clinic.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<ActionResult> FindById(int id)
         {
             var user = await _employeeRepository.FindById(id);

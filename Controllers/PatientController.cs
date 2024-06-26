@@ -21,7 +21,7 @@ namespace Clinic.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<ActionResult<List<Patient>>> FindAllAsync()
         {
             List<Patient> patients = await _business.FindAllAsync();
@@ -30,7 +30,7 @@ namespace Clinic.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<ActionResult<Patient>> CreateAsync(PatientRequest request)
         {
             var obj = new Patient
@@ -46,7 +46,7 @@ namespace Clinic.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<ActionResult<Patient>> UpdateAsync(int id, [FromBody] PatientRequest request)
         {
             var obj = new Patient
@@ -63,7 +63,7 @@ namespace Clinic.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<ActionResult> DeleteEmployee(int id)
         {
             await _business.DeleteAsync(id);
@@ -71,7 +71,7 @@ namespace Clinic.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<ActionResult<Patient>> FindById(int id)
         {
             var patient = await _business.FindById(id);
