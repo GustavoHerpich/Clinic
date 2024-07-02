@@ -16,11 +16,13 @@ namespace Clinic.Dependencies
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             services.AddScoped<IPatientRepository, PatientRepository>();
             services.AddScoped<IDoctorRepository, DoctorRepository>();
+            services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             #endregion
 
             #region Business
             services.AddScoped<IPatientBusiness, PatientBusiness>();
             services.AddScoped<IDoctorBusiness, DoctorBusiness>();
+            services.AddScoped<IAppointmentBusiness, AppointmentBusiness>();
             #endregion
 
             return services;

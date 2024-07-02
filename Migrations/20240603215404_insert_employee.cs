@@ -11,13 +11,13 @@ namespace Clinic.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-          //  string[] columns = { nameof(Employee.Id), nameof(Employee.UserName), nameof(Employee.Password), nameof(Employee.Role) };
-          //  object[,] values = new object[,] 
-          //  {
-          //      { 1 , "dhiu", "senha" , 0}
-          //  };
+            //string[] columns = { nameof(Employee.Id), nameof(Employee.UserName), nameof(Employee.Password), nameof(Employee.Role) };
+            //object[,] values = new object[,]
+            //{
+            //    { 1 , "dhiu", "senha" , 0}
+            //};
 
-          //migrationBuilder.InsertData("Employees", columns, values);
+            //migrationBuilder.InsertData("Employees", columns, values);
         }
 
         /// <inheritdoc />

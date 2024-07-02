@@ -1,6 +1,6 @@
 ﻿namespace Clinic.Entities
 {
-    public class Scheduling
+    public class Appointment
     {
         public int Id { get; set; }
         public int IdDoctor { get; set; }
