@@ -29,7 +29,7 @@ namespace Clinic.Middleware
                 NotFoundException notFoundEx => new ExceptionResponse(HttpStatusCode.NotFound, notFoundEx.Message),
                 UnauthorizedException _ => new ExceptionResponse(HttpStatusCode.Unauthorized, "Usuário ou senha inválidos."),
                 BadRequestException badRequestEx => new ExceptionResponse(HttpStatusCode.BadRequest, badRequestEx.Message),
-                _ => new ExceptionResponse(HttpStatusCode.InternalServerError, "Ocorreu um erro no nosso sistema, favor entre em contato com nós ou tente mais tarde.")
+                _ => new ExceptionResponse(HttpStatusCode.InternalServerError, $"Ocorreu um erro inesperado no nosso sistema.")
             };
 
             context.Response.ContentType = "application/json";
